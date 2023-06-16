@@ -1,7 +1,6 @@
 --tabla Persona
 create table Usuario(
-    codigo char(1) not null,
+    codigo INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre varchar (20) not null,
-    puntuacion char (2),
-    primary key(codigo)
+    puntuacion char (2)
 )

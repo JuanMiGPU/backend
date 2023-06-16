@@ -82,6 +82,27 @@ module.exports.cargar = function(servidorExpress, laLogica){
             respuesta.send(JSON.stringify(res[0]))
             //console.log(JSON.stringify(res[0]+"res[0]"))
         })
+    //post palabra con el nombre del usuario
+
+    servidorExpress.post("/palabraUser",
+        async function(peticion,respuesta){
+            console.log("* POST/personaUSER")
+            var datos=JSON.parse(peticion.body)
+            console.log(datos + "   <---- es datos (palabraUser)")
+            var username=datos.nombre
+            var pal=datos.palabra
+            var datosPalabra={palabra:pal}
+            var datosPersona={nombre: username, puntuacion:0}
+            console.log(username+"   <---- es username (palabraUser)")
+            console.log(pal+"   <---- es palabra (palabraUser")
+            await laLogica.insertarPalabra(datosPalabra)
+            await laLogica.insertarPersona(datosPersona)
+            respuesta.send("OK")
+        }
+    )
+
+
+
     servidorExpress.post("/persona/puntuacion",
             async function (peticion, respuesta){
                 //averiguo el codigo

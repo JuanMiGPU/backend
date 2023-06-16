@@ -35,21 +35,7 @@ module.exports =class Logica {
         })
     }
     //----------------------------------------------
-    //      borrarFilasDeTodasLasTablas()-->
-    //----------------------------------------------
-    /*async borrarFilasDeTodasLasTablas(){
-        var Tabla1= "Matricula"
-        var Tabla2= "Asignatura"
-        var Tabla3= "Persona"
-        await this.borrarFilasDe(Tabla1)
-        await this.borrarFilasDe(Tabla2)
-        await this.borrarFilasDe(Tabla3)
-
-    }*/
-
-    //----------------------------------------------
-    // datos:{dni:Texto, nombre:Texto: apellidos:Texto}
-    //                              --> insertarPersona()-->
+    // inserta una palabra dado SOLO la palabra
     //----------------------------------------------
     
     insertarPalabra(datos){
@@ -64,11 +50,14 @@ module.exports =class Logica {
             })
         })    
      }
+    //----------------------------------------------
+    // inserta una persona dado el JSON entero con el codigo, el nombre y la puntuación
+    //----------------------------------------------
     insertarPersona(datos){//funciona
         //console.log(datos)
         var textoSQL=
-                'insert into Usuario values ( $codigo, $nombre, $puntuacion);'
-        var valoresParaSQL= {$codigo: datos.codigo, $nombre: datos.nombre, $puntuacion: datos.puntuacion}
+                'insert into Usuario("nombre","puntuacion") values ($nombre, $puntuacion);'
+        var valoresParaSQL= {$nombre: datos.nombre, $puntuacion: datos.puntuacion}
 
         return new Promise ((resolver, rechazar)=> {
             this.laConexion.run (textoSQL, valoresParaSQL, function (err){
@@ -77,12 +66,10 @@ module.exports =class Logica {
         })    
     }
     //----------------------------------------------
-    //              codigo:Texto -->
-    //                           buscarPersonaPorDNI()<--
-    //{dni, nombre, apellidos}<--
-     //----------------------------------------------
+    // devuelve todo de la persona con ese código       
+    //----------------------------------------------
      buscarPersonaConCodigo (codigo){
-        var textoSQL = "select nombre from Usuario where codigo=$codigo";
+        var textoSQL = "select * from Usuario where codigo=$codigo";
         var valoresParaSQL = {$codigo: codigo}
         return new Promise ((resolver, rechazar)=>{
             this.laConexion.all(textoSQL,valoresParaSQL,(err,res)=>{
@@ -121,7 +108,7 @@ module.exports =class Logica {
             })
         })
     }*/
-verPuntuacion (codigo){
+    verPuntuacion (codigo){
         var textoSQL= "select puntuacion from Usuario where codigo=$codigo;"
         var valoresParaSQL= {$codigo:codigo}
         return new Promise((resolver,rechazar)=>{
@@ -162,6 +149,9 @@ verPuntuacion (codigo){
                 console.error(err);
             });
     }
+    vincularCodigos(){
+
+    }
     //----------------------------------------------
     // cerrar()-->
     //----------------------------------------------
@@ -188,18 +178,6 @@ verPuntuacion (codigo){
 //----------------------------------------------
 
 //A pertir de un objeto JSON me devuelve true si contiene el campo que quiero
-    /*buscarCampo(objeto, campo) {
-        for (let key in objeto) {
-         if (typeof objeto[key] === 'object') {
-         if (buscarCampo(objeto[key], campo)) {
-          return true;
-        }
-      } else if (key === campo || objeto[key] === campo) {
-        return true;
-      }
-    }
-    return false;
-    }//buscarCampo*/
 //Analogía con array JSON
 buscarCampoEnArray(array, campo) {
     for (let i = 0; i < array.length; i++) {

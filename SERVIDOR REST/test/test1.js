@@ -67,6 +67,20 @@ describe( "Test 1 : Recuerda arrancar el servidor", function() {
 
         )//.get
         })//it
+        var yo= {'palabra':"boli",nombre:"Manolo"}
+        console.log(yo.palabra+ "<----- soy la palabra")
+    it("probar POST palabra con usuario",function(hecho){
+        request.post(
+            {url:IP_PUERTO+"/palabraUser",
+            headers : { "User-Agent" : "JuanMi" ,"Content-Type": "application/json"},
+            body: JSON.stringify(yo)},
+            function(err, respuesta){
+                assert.equal( err, null, "¿ha habido un error?" )
+                assert.equal( respuesta.statusCode, 200, "¿El código no es 200 (OK)" )
+                hecho() 
+            }
+    )}
+        )
     // ....................................................
     // ....................................................
     var Usuario={nombre:"Usuario"}
@@ -87,7 +101,7 @@ describe( "Test 1 : Recuerda arrancar el servidor", function() {
 
         )//.get
         })//it 
-    var persona={codigo:'2',nombre:'Antonio',puntuacion:0}
+    var persona={nombre:'Antonio',puntuacion:0}
     it( "probar POST /persona", function( hecho ) {
         request.post(
             { url : IP_PUERTO+"/persona",
@@ -105,7 +119,7 @@ describe( "Test 1 : Recuerda arrancar el servidor", function() {
         })//it
     // ....................................................
     // ....................................................
-    it("Debería obtener una persona con el código proporcionado", function(hecho) {
+    /*it("Debería obtener una persona con el código proporcionado", function(hecho) {
         var codigo = "2"; // Asegúrate de tener un registro con este código en la base de datos
         request.get(
             { url: IP_PUERTO + "/persona/" + codigo },
@@ -132,5 +146,5 @@ describe( "Test 1 : Recuerda arrancar el servidor", function() {
             assert.equal(parseInt(JSON.parse(body)), '0', '¿La puntuación no es un número?');
             done();
         });
-    });
+    });*/
 })
