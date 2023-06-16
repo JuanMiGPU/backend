@@ -88,15 +88,31 @@ module.exports.cargar = function(servidorExpress, laLogica){
         async function(peticion,respuesta){
             console.log("* POST/personaUSER")
             var datos=JSON.parse(peticion.body)
-            console.log(datos + "   <---- es datos (palabraUser)")
+            //console.log(datos + "   <---- es datos (palabraUser)")
             var username=datos.nombre
             var pal=datos.palabra
             var datosPalabra={palabra:pal}
             var datosPersona={nombre: username, puntuacion:0}
-            console.log(username+"   <---- es username (palabraUser)")
-            console.log(pal+"   <---- es palabra (palabraUser")
+            //console.log(username+"   <---- es username (palabraUser)")
+            //console.log(pal+"   <---- es palabra (palabraUser")
             await laLogica.insertarPalabra(datosPalabra)
             await laLogica.insertarPersona(datosPersona)
+
+            //hemos insertado la palabra, ahora vamos a coger el código 
+            //de la palabra y del usuario para poder relacionarlos
+            //codigo1 es usuario, codigo 2 es palabra
+            //VARIABLES
+
+            var cod1= await laLogica.buscarCodigoConNombre({username})
+            var cod2= await laLogica.buscarCodigoConPalabra(pal)
+            //FUNCIONES
+            var codigoUs=cod1[0].codigo;
+            var codigoPal=cod2[0].codigo;
+            //console.log(codigoUs)
+            //console.log(cod1+ "<--- sin stringify")
+            //FUNCIONES
+            //console.log(JSON.stringify(cod2) + " <----- es cod2")
+            await laLogica.insertarCodigos({codigo1:codigoUs,codigo2:codigoPal})
             respuesta.send("OK")
         }
     )

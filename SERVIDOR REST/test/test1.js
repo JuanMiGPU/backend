@@ -67,9 +67,13 @@ describe( "Test 1 : Recuerda arrancar el servidor", function() {
 
         )//.get
         })//it
-        var yo= {'palabra':"boli",nombre:"Manolo"}
-        console.log(yo.palabra+ "<----- soy la palabra")
-    it("probar POST palabra con usuario",function(hecho){
+
+
+        var yo= {'palabra':"boligrafo",'nombre':"Angel"}
+        //console.log(yo.palabra+ "<----- soy la palabra")
+
+    it("probar POST palabra con usuario",function(done){
+        //`this.timeout(5000)
         request.post(
             {url:IP_PUERTO+"/palabraUser",
             headers : { "User-Agent" : "JuanMi" ,"Content-Type": "application/json"},
@@ -77,7 +81,7 @@ describe( "Test 1 : Recuerda arrancar el servidor", function() {
             function(err, respuesta){
                 assert.equal( err, null, "¿ha habido un error?" )
                 assert.equal( respuesta.statusCode, 200, "¿El código no es 200 (OK)" )
-                hecho() 
+                done() 
             }
     )}
         )

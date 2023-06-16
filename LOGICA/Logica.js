@@ -114,7 +114,7 @@ module.exports =class Logica {
         return new Promise((resolver,rechazar)=>{
             this.laConexion.all(textoSQL,valoresParaSQL,(err,res)=>{
                 (err ? rechazar(err): resolver(res))
-                console.log(res)
+                //console.log(res)
             })
         })
     }
@@ -149,7 +149,45 @@ module.exports =class Logica {
                 console.error(err);
             });
     }
-    vincularCodigos(){
+     //-----------------------------------------------------------------
+    //-----------------------------------------------------------------
+    //CODIGOS
+    //-----------------------------------------------------------------
+    //-----------------------------------------------------------------
+    buscarCodigoConNombre (nombre){
+        var textoSQL = "select codigo from Usuario where nombre=$nombre;"
+        console.log(nombre.username+" soy username")
+        var valoresParaSQL = {$nombre: nombre.username}
+        return new Promise ((resolver, rechazar)=>{
+            this.laConexion.all(textoSQL,valoresParaSQL,(err,res)=>{
+                (err ? rechazar(err): resolver(res))
+                console.log(res+"<--- soy resultado de codigo con nombre")
+                console.log(JSON.stringify(res)+"resultado stringificado")
+            })
+        })
+     }
+     buscarCodigoConPalabra(palabra){
+        var textoSQL= "select codigo from Palabra where palabra=$palabra;"
+        var valoresParaSQL={$palabra:palabra}
+        return new Promise ((resolver, rechazar)=>{
+            this.laConexion.all(textoSQL,valoresParaSQL,(err,res)=>{
+                (err ? rechazar(err): resolver(res))
+                //console.log(res+"<---- soy resultado de codigo con Palabra")
+            })
+        })
+     }
+    insertarCodigos(datos){
+        var textoSQL=
+        'insert into Codigo values ($codigo1, $codigo2);'
+        var valoresParaSQL= {$codigo1: datos.codigo1, $codigo2: datos.codigo2}
+            //codigo1 es usuario, codigo 2 es palabra
+            
+    return new Promise ((resolver, rechazar)=> {
+    this.laConexion.run (textoSQL, valoresParaSQL, function (err){
+        (err ? rechazar(err) : resolver())
+    })
+    }) 
+
 
     }
     //----------------------------------------------

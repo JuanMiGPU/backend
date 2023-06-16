@@ -34,6 +34,10 @@ it( "borrar todas las filas", async function() {
 it("inserto palabra ",
         async function(){
                 await laLogica.insertarPalabra({"palabra":'móvil'})
+                await laLogica.insertarPalabra({palabra:"hilo"})
+                await laLogica.insertarPalabra({palabra:"mierda"})
+                await laLogica.insertarPalabra({palabra:"oveja"})
+                await laLogica.insertarPalabra({palabra:"pajaro"})
                 
         })
 // ....................................................
@@ -41,7 +45,7 @@ it("inserto palabra ",
 it( "puedo insertar una persona",
         async function() {
                 await laLogica.insertarPersona(
-                        {codigo: "1", nombre: "Pepe", puntuacion: '0'} )
+                        {'nombre': "Pepe", 'puntuacion': 0} )
                 var res = await laLogica.buscarPersonaConCodigo( "1" )
                 //assert.equal( res.length, 1, "¿no hay un resulado?" )
                 //assert.equal( res[0].codigo, "1", "¿no es 1?" )
@@ -60,6 +64,7 @@ it( "no puedo insertar una persona con codigo que ya está",
          }
         assert( error, "¿Ha insertado el codigo que ya estaba 1? ¿No ha pasado por el catch()?" )
 }) // it
+
 it("puedo ver la puntuación de una persona",
         async function(){
             var puntuacion= await laLogica.verPuntuacion('1')
