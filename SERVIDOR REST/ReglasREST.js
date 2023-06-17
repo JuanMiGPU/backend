@@ -82,11 +82,12 @@ module.exports.cargar = function(servidorExpress, laLogica){
             respuesta.send(JSON.stringify(res[0]))
             //console.log(JSON.stringify(res[0]+"res[0]"))
         })
-    //post palabra con el nombre del usuario
 
+
+    //post palabra con el nombre del usuario
     servidorExpress.post("/palabraUser",
         async function(peticion,respuesta){
-            console.log("* POST/personaUSER")
+            console.log("* POST/palabraUSER")
             var datos=JSON.parse(peticion.body)
             //console.log(datos + "   <---- es datos (palabraUser)")
             var username=datos.nombre
@@ -117,8 +118,6 @@ module.exports.cargar = function(servidorExpress, laLogica){
         }
     )
 
-
-
     servidorExpress.post("/persona/puntuacion",
             async function (peticion, respuesta){
                 //averiguo el codigo
@@ -135,6 +134,8 @@ module.exports.cargar = function(servidorExpress, laLogica){
                 respuesta.send(JSON.stringify(res[0]))
                 //console.log(JSON.stringify(res[0]+"res[0]"))*/
         })
+
+    
     servidorExpress.get(
         "/persona/:codigo",
         async function( peticion, respuesta ){
@@ -143,6 +144,28 @@ module.exports.cargar = function(servidorExpress, laLogica){
             var resultado = await laLogica.buscarPersonaConCodigo(codigo);
             respuesta.json(resultado);
         });
+//NO HACE FALTA QUE ME ENVIES NADA.
+    servidorExpress.get(
+        "/palabras",
+        async function( peticion, respuesta ){
+            console.log( " * GET /palabras" );
+            var resultado = await laLogica.verPalabras();
+            console.log(resultado+"<---- de ver palabras")
+            respuesta.json(resultado);
+        });
+
+    servidorExpress.get(
+        "/puntuacionPalabras",
+        async function(peticion,respuesta){
+            console.log(" * get Puntuación Palabras")
+            //entrada=JSON.parse(peticion.body)
+            var resultado =await laLogica.PuntuacionDePalabras(peticion.body)
+            console.log(resultado+"<-----de puntuacionPalabras")
+            respuesta.json(resultado)
+        }
+    )
+
+
     servidorExpress.get(
         "/persona/:codigo/puntuacion",
         async function(peticion, respuesta) {

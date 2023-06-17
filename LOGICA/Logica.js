@@ -77,11 +77,50 @@ module.exports =class Logica {
             })
         })
      }
-
     //----------------------------------------------
-    //           Codigo:Texto -->
-    //                           buscarAsignaturaPorCodigo()<--
-    //       {codigo, nombre}<--
+    //----------------------------------------------
+    verPalabras(){
+        var textoSQL = "select * from Palabra;"
+        return new Promise ((resolver, rechazar)=>{
+            this.laConexion.all(textoSQL,(err,res)=>{
+                (err ? rechazar(err): resolver(res))
+                console.log(res)
+            })
+        })
+    }
+    //----------------------------------------------
+    //----------------------------------------------
+    async PuntuacionDePalabras(datos){
+        var usuarios=[]
+        var Puntuaciones=[]
+        console.log(datos.length+"<---- soy datos.length")
+        //Me pasas un array de palabras, cojo su código y saco el código del usuario
+        for(var i=0; i<datos.length-1;i++){
+            var codUser =await this.relacionarCodigoPalabra_User(datos[i].codigo)
+            console.log(codUser+"<------ soy codUser")
+            usuarios.push(codUser)
+        }
+        console.log(usuarios+"<---- soy Usuarios")
+        //Con el codigo del usuario veo la puntuación
+        for (var i=0; i<usuarios.length-1;i++){
+            var PuntUser= await this.verPuntuacion(usuarios[i])
+            console.log(PuntUser+"<------ soy puntUser")
+            Puntuaciones.push(PuntUser)
+        }
+        console.log(Puntuaciones+"<---- soy Puntuaciones")
+        //Devuelvo las puntuaciones en un array
+
+        //DEBE ESTAR IGUAL COLOCADO QUE LAS PALABRAS POR LO QUE PUEDES
+        //UTILIZAR LA POSICIÓN DE LAS PALABRAS PARA COGER LA PUNTUACION 
+        //EN ESTE ARRAY
+        return Puntuaciones
+        /*return new Promise ((resolver, rechazar)=>{
+            this.laConexion.all(textoSQL,valoresParaSQL,(err,res)=>{
+                (err ? rechazar(err): resolver(Puntuaciones))
+            })
+        })*/     
+    }
+    //----------------------------------------------
     //----------------------------------------------
     buscarTematicaPorCodigo (codigo){
         var textoSQL = "select Tematica from Tematica where codigo=$codigo;"
@@ -92,11 +131,7 @@ module.exports =class Logica {
             })
         })
      }
-
     //----------------------------------------------
-    //       codigo:Texto-->
-    //                       NumerodeMatriculados()
-    //          res: int<--
     //----------------------------------------------
     
    /*numerodeJugadores(codigo){
@@ -108,6 +143,8 @@ module.exports =class Logica {
             })
         })
     }*/
+    //----------------------------------------------
+    //----------------------------------------------
     verPuntuacion (codigo){
         var textoSQL= "select puntuacion from Usuario where codigo=$codigo;"
         var valoresParaSQL= {$codigo:codigo}
@@ -122,8 +159,6 @@ module.exports =class Logica {
         var res= await this.verPuntuacion(codigo)
         return res
     }
-
-
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
     //arreglar
@@ -156,13 +191,13 @@ module.exports =class Logica {
     //-----------------------------------------------------------------
     buscarCodigoConNombre (nombre){
         var textoSQL = "select codigo from Usuario where nombre=$nombre;"
-        console.log(nombre.username+" soy username")
+        //console.log(nombre.username+" soy username")
         var valoresParaSQL = {$nombre: nombre.username}
         return new Promise ((resolver, rechazar)=>{
             this.laConexion.all(textoSQL,valoresParaSQL,(err,res)=>{
                 (err ? rechazar(err): resolver(res))
-                console.log(res+"<--- soy resultado de codigo con nombre")
-                console.log(JSON.stringify(res)+"resultado stringificado")
+                //console.log(res+"<--- soy resultado de codigo con nombre")
+                //console.log(JSON.stringify(res)+"resultado stringificado")
             })
         })
      }
@@ -189,6 +224,27 @@ module.exports =class Logica {
     }) 
 
 
+    }
+    //codigo1 es usuario, codigo 2 es palabra
+    relacionarCodigosUser_Palabra(datos){
+        var textoSQL= "select codigo2 from Codigo where codigo1=$codigo;"
+        var valoresParaSQL={$codigo:datos.codigo}
+        return new Promise ((resolver, rechazar)=>{
+            this.laConexion.all(textoSQL,valoresParaSQL,(err,res)=>{
+                (err ? rechazar(err): resolver(res))
+                //console.log(res+"<---- soy resultado de codigo con Palabra")
+            })
+        })
+    }
+    relacionarCodigoPalabra_User(datos){
+        var textoSQL= "select codigo1 from Codigo where codigo2=$codigo;"
+        var valoresParaSQL={$codigo:datos.codigo}
+        return new Promise ((resolver, rechazar)=>{
+            this.laConexion.all(textoSQL,valoresParaSQL,(err,res)=>{
+                (err ? rechazar(err): resolver(res))
+                //console.log(res+"<---- soy resultado de codigo con Palabra")
+            })
+        })
     }
     //----------------------------------------------
     // cerrar()-->

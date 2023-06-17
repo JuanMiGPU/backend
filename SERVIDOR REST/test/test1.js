@@ -20,7 +20,7 @@ var ordenador= {palabra:'ordenado'}
 
 describe( "Test 1 : Recuerda arrancar el servidor", function() {
 
-    it( "probar que GET /prueba responde ¡Funciona!",function(hecho){
+    /*it( "probar que GET /prueba responde ¡Funciona!",function(hecho){
         request.get(
         { url : IP_PUERTO+"/prueba", headers : { "User-Agent" : "jordi" }},
         function( err, respuesta, carga ) {
@@ -31,8 +31,9 @@ describe( "Test 1 : Recuerda arrancar el servidor", function() {
             hecho()
         } // callback()
         )//.get
-        })//it
-    var Palabra={nombre:"Palabra"}
+        })//it*/
+    /*var Palabra={nombre:"Palabra"}
+    
     it( "probar DELETE /palabra", function( hecho ) {
         request.post(
             { url : IP_PUERTO+"/borrarFilasde/",
@@ -105,6 +106,8 @@ describe( "Test 1 : Recuerda arrancar el servidor", function() {
 
         )//.get
         })//it 
+
+
     var persona={nombre:'Antonio',puntuacion:0}
     it( "probar POST /persona", function( hecho ) {
         request.post(
@@ -121,8 +124,60 @@ describe( "Test 1 : Recuerda arrancar el servidor", function() {
 
         )//.get
         })//it
+    */
     // ....................................................
     // ....................................................
+var Puntuaciones
+    it ("probar GET/palabras", function(done){
+        request.get(
+            { url : IP_PUERTO+"/palabras", headers : { "User-Agent" : "JuanMi" }},
+            function( err, respuesta) {
+                
+                assert.equal( err, null, "¿ha habido un error?" ) 
+                          
+                assert.equal( respuesta.statusCode, 200, "¿El código no es 200 (OK)" )
+                console.log(JSON.stringify(respuesta.body[0]))
+                //He puesto esto para probar, PUNTUACIONES es un array con las palabras y sus códigos
+                
+                done()
+            } // callback()
+            )//.get   
+    })//it
+    var Puntuaciones =[
+        { codigo: 132, palabra: 'ordenado' },
+        { codigo: 133, palabra: 'boligrafo' }
+      ]
+//console.log(Puntuaciones.length+"<---- soy Puntuaciones.length")
+it("probar GET/puntuacionPalabras", function(done){
+    request.get(
+        { url : IP_PUERTO+"/puntuacionPalabras", headers : { "User-Agent" : "JuanMi" }, body:Puntuaciones},
+        function(err, respuesta){
+            assert.equal( err, null, "¿ha habido un error?" ) 
+                          
+            assert.equal( respuesta.statusCode, 200, "¿El código no es 200 (OK)" )
+            console.log(respuesta.body)
+            done()
+        }
+    )
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /*it("Debería obtener una persona con el código proporcionado", function(hecho) {
         var codigo = "2"; // Asegúrate de tener un registro con este código en la base de datos
         request.get(
