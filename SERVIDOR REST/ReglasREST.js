@@ -31,6 +31,16 @@ module.exports.cargar = function(servidorExpress, laLogica){
         await laLogica.borrarFilasDe(tabla);
         respuesta.send("OK");
       });
+
+    servidorExpress.post("/borrar", async function (peticion, respuesta) {
+        console.log(" * POST /borrar ");
+          //borro todo de todas las tablas salvo Temática
+
+        await laLogica.borrarFilasDe(Usuario);
+        await laLogica.borrarFilasDe(Palabra)
+        await laLogica.borrarFilasDe(Codigo)
+          respuesta.send("OK");
+    });
     // .......................................................
     // POST /alta   
     // .......................................................
