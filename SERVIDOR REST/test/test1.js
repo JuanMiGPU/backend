@@ -20,7 +20,7 @@ var ordenador= {palabra:'ordenado'}
 
 describe( "Test 1 : Recuerda arrancar el servidor", function() {
 
-    /*it( "probar que GET /prueba responde ¡Funciona!",function(hecho){
+    it( "probar que GET /prueba responde ¡Funciona!",function(hecho){
         request.get(
         { url : IP_PUERTO+"/prueba", headers : { "User-Agent" : "jordi" }},
         function( err, respuesta, carga ) {
@@ -127,8 +127,7 @@ describe( "Test 1 : Recuerda arrancar el servidor", function() {
     */
     // ....................................................
     // ....................................................
-var Puntuaciones
-    it ("probar GET/palabras", function(done){
+   /*it ("probar GET/palabras", function(done){
         request.get(
             { url : IP_PUERTO+"/palabras", headers : { "User-Agent" : "JuanMi" }},
             function( err, respuesta) {
@@ -142,20 +141,33 @@ var Puntuaciones
                 done()
             } // callback()
             )//.get   
-    })//it
-    var Puntuaciones =[
-        { codigo: 132, palabra: 'ordenado' },
-        { codigo: 133, palabra: 'boligrafo' }
+    })//it*/
+    var Palabras =[
+        { codigo: 176, palabra: 'móvil' },
+        { codigo: 177, palabra: 'hilo' }
       ]
-//console.log(Puntuaciones.length+"<---- soy Puntuaciones.length")
-it("probar GET/puntuacionPalabras", function(done){
-    request.get(
-        { url : IP_PUERTO+"/puntuacionPalabras", headers : { "User-Agent" : "JuanMi" }, body:Puntuaciones},
+    //MENCIAAAAAA
+
+    //CUIDADO: ns por qué pollas no me deja meter directo el JSON a la entrada,
+    //Lo he convertido a texto asiq tu tb tienes que meter texto en este método
+
+    //Sería ver el resultado de verPalabras y stringificarlo 
+    var entrada=JSON.stringify(Palabras)
+
+it("probar post/puntuacionPalabras", function(done){
+    request.post(
+        { url : IP_PUERTO+"/puntuacionPalabras", 
+        headers : { "User-Agent" : "JuanMi","Content-Type": "application/json" },
+        body:JSON.stringify(Palabras)},
         function(err, respuesta){
             assert.equal( err, null, "¿ha habido un error?" ) 
-                          
+                      console.log(err+" es err, debe ser null")    
             assert.equal( respuesta.statusCode, 200, "¿El código no es 200 (OK)" )
+            //console.log(respuesta.body+"<---- soy respuesta.body")
             console.log(respuesta.body)
+            //assert.equal(respuesta.body[0],4, "¿no es 4?")
+
+            //va a llegar algo así ["4", "3"]
             done()
         }
     )

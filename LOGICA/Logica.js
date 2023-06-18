@@ -84,41 +84,38 @@ module.exports =class Logica {
         return new Promise ((resolver, rechazar)=>{
             this.laConexion.all(textoSQL,(err,res)=>{
                 (err ? rechazar(err): resolver(res))
-                console.log(res)
+                //console.log(res)
             })
         })
     }
     //----------------------------------------------
     //----------------------------------------------
-    async PuntuacionDePalabras(datos){
-        var usuarios=[]
-        var Puntuaciones=[]
-        console.log(datos.length+"<---- soy datos.length")
-        //Me pasas un array de palabras, cojo su código y saco el código del usuario
-        for(var i=0; i<datos.length-1;i++){
-            var codUser =await this.relacionarCodigoPalabra_User(datos[i].codigo)
-            console.log(codUser+"<------ soy codUser")
-            usuarios.push(codUser)
-        }
-        console.log(usuarios+"<---- soy Usuarios")
-        //Con el codigo del usuario veo la puntuación
-        for (var i=0; i<usuarios.length-1;i++){
-            var PuntUser= await this.verPuntuacion(usuarios[i])
-            console.log(PuntUser+"<------ soy puntUser")
-            Puntuaciones.push(PuntUser)
-        }
-        console.log(Puntuaciones+"<---- soy Puntuaciones")
-        //Devuelvo las puntuaciones en un array
 
-        //DEBE ESTAR IGUAL COLOCADO QUE LAS PALABRAS POR LO QUE PUEDES
-        //UTILIZAR LA POSICIÓN DE LAS PALABRAS PARA COGER LA PUNTUACION 
-        //EN ESTE ARRAY
-        return Puntuaciones
-        /*return new Promise ((resolver, rechazar)=>{
-            this.laConexion.all(textoSQL,valoresParaSQL,(err,res)=>{
-                (err ? rechazar(err): resolver(Puntuaciones))
-            })
-        })*/     
+//SE LE DA UN ARRAY DE PALABRAS (EL QUE DEVUELVE VER PALABRAS VALE)
+//DEVUELVE UN ARRAY DE NÚMEROS EN EL MISMO ORDEN QUE LAS PALABRAS
+    async PuntuacionDePalabras(palabras) {//CHATGPT
+        //try {
+            //console.log(palabras)
+            let codigosUsuarios = [];
+            for (let i = 0; i < palabras.length; i++) {
+                //console.log(palabras[i].codigo+"<--- soy el codigo de palabra i")
+                let codigoUsuario = await this.relacionarCodigoUserConPalabra(palabras[i].codigo);
+                codigosUsuarios.push(codigoUsuario);
+                //console.log(codigoUsuario+"<--- soy codigo usuario")
+            }
+            console.log(codigosUsuarios+"<---- soy codigos usuario")
+    
+            let puntuaciones = [];
+            for (let i = 0; i < codigosUsuarios.length; i++) {
+                let puntuacion = await this.verPuntuacion(codigosUsuarios[i]);
+                puntuaciones.push(puntuacion);
+            }
+            console.log(puntuaciones+"<--- soy Puntuaciones")
+    
+            return puntuaciones;
+        //} catch (error) {
+        //   console.error("Error al obtener puntuaciones:", error);
+        //}
     }
     //----------------------------------------------
     //----------------------------------------------
@@ -145,7 +142,7 @@ module.exports =class Logica {
     }*/
     //----------------------------------------------
     //----------------------------------------------
-    verPuntuacion (codigo){
+    /*verPuntuacion (codigo){
         var textoSQL= "select puntuacion from Usuario where codigo=$codigo;"
         var valoresParaSQL= {$codigo:codigo}
         return new Promise((resolver,rechazar)=>{
@@ -154,6 +151,20 @@ module.exports =class Logica {
                 //console.log(res)
             })
         })
+    }*/
+    verPuntuacion(codigo) {
+        var textoSQL = "select puntuacion from Usuario where codigo=$codigo;";
+        var valoresParaSQL = { $codigo: codigo };
+        return new Promise((resolver, rechazar) => {
+            this.laConexion.all(textoSQL, valoresParaSQL, (err, res) => {
+                if (err) {
+                    console.log(err);
+                    return rechazar(err);
+                }
+                //console.log(res[0].puntuacion+"<-- soy la puntuacion (solo un numero)");
+                resolver(res[0].puntuacion);
+            });
+        });
     }
     async main_VerPuntuacion(codigo){
         var res= await this.verPuntuacion(codigo)
@@ -211,6 +222,8 @@ module.exports =class Logica {
             })
         })
      }
+
+
     insertarCodigos(datos){
         var textoSQL=
         'insert into Codigo values ($codigo1, $codigo2);'
@@ -225,23 +238,34 @@ module.exports =class Logica {
 
 
     }
+
     //codigo1 es usuario, codigo 2 es palabra
-    relacionarCodigosUser_Palabra(datos){
+    relacionarCodigoUserConPalabra(datos){
         var textoSQL= "select codigo2 from Codigo where codigo1=$codigo;"
-        var valoresParaSQL={$codigo:datos.codigo}
+        var valoresParaSQL={$codigo:datos}
         return new Promise ((resolver, rechazar)=>{
             this.laConexion.all(textoSQL,valoresParaSQL,(err,res)=>{
-                (err ? rechazar(err): resolver(res))
-                //console.log(res+"<---- soy resultado de codigo con Palabra")
+                if (err) {
+                    console.log(err);
+                    return rechazar(err);
+                }
+                //console.log(res[0].codigo2 + "<---- soy resultado de codigo con nombre");
+                resolver(res[0].codigo2);
+                
             })
         })
     }
     relacionarCodigoPalabra_User(datos){
         var textoSQL= "select codigo1 from Codigo where codigo2=$codigo;"
-        var valoresParaSQL={$codigo:datos.codigo}
+        var valoresParaSQL={$codigo:datos}
         return new Promise ((resolver, rechazar)=>{
             this.laConexion.all(textoSQL,valoresParaSQL,(err,res)=>{
-                (err ? rechazar(err): resolver(res))
+                if (err) {
+                    console.log(err);
+                    return rechazar(err);
+                }
+                //console.log(res[0].codigo1 + "<---- soy resultado de codigo con nombre");
+                resolver(res[0].codigo1);
                 //console.log(res+"<---- soy resultado de codigo con Palabra")
             })
         })

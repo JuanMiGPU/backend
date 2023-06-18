@@ -154,13 +154,18 @@ module.exports.cargar = function(servidorExpress, laLogica){
             respuesta.json(resultado);
         });
 
-    servidorExpress.get(
+    servidorExpress.post(
         "/puntuacionPalabras",
         async function(peticion,respuesta){
-            console.log(" * get Puntuación Palabras")
+            console.log(" * POST Puntuación Palabras")
             //entrada=JSON.parse(peticion.body)
-            var resultado =await laLogica.PuntuacionDePalabras(peticion.body)
-            console.log(resultado+"<-----de puntuacionPalabras")
+            console.log(JSON.stringify(peticion.body)+"<--- soy peticion.body en Reglas")
+            //console.log(JSON.parse(peticion.body))
+            var datos=JSON.parse(peticion.body)
+            //console.log(datos+"<--- soy datos")
+
+            var resultado =await laLogica.PuntuacionDePalabras(datos)
+            //console.log(resultado+"<-----de puntuacionPalabras")
             respuesta.json(resultado)
         }
     )
