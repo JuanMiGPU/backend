@@ -82,6 +82,21 @@ module.exports =class Logica {
             })
         })
      }
+    //codigo={codigo:35}
+    async cogerUsuarioconCod_Palabra(codigo){
+        console.log(codigo+"<--- soy codigo (soy JSON)")
+        var cod=JSON.parse(codigo)
+        //console.log((JSON.parse(codigo)).codigo+"<--- un solo numero")
+        //cojo el código y lo relaciono con el de la persona
+        var cod_User=await this.relacionarCodigoPalabra_User(cod.codigo)
+
+        //con cod_User cojo la persona entera
+
+        var persona=await this.buscarPersonaConCodigo(cod_User)
+            //console.log(persona[0]+"<--- soy lo que devuelve buscar persona")
+        return persona[0]
+    }
+        //
     //----------------------------------------------
     //----------------------------------------------
     verPalabras(){
@@ -136,31 +151,6 @@ module.exports =class Logica {
     //----------------------------------------------
     //----------------------------------------------
     
-
-   /*numerodeJugadores(codigo){
-        var textoSQL = "select count(*) as numJugadores from Persona where codigo=$codigo;"
-        var valoresParaSQL = {$codigo:codigo}
-        return new Promise ((resolver, rechazar)=>{
-            this.laConexion.all(textoSQL,valoresParaSQL,(err,res)=>{
-                (err ? rechazar(err): resolver(res))
-            })
-        })
-    }*/
-    //----------------------------------------------
-    //----------------------------------------------
-    /*verPuntuacion (codigo){
-        var textoSQL= "select puntuacion from Usuario where codigo=$codigo;"
-        var valoresParaSQL= {$codigo:codigo}
-        return new Promise((resolver,rechazar)=>{
-            this.laConexion.all(textoSQL,valoresParaSQL,(err,res)=>{
-                (err ? rechazar(err): resolver(res))
-                //console.log(res)
-            })
-        })
-    }*/
-
-
-
     verPuntuacion(codigo) {
         var textoSQL = "select puntuacion from Usuario where codigo=$codigo;";
         var valoresParaSQL = { $codigo: codigo };
@@ -177,50 +167,12 @@ module.exports =class Logica {
         });
     }
 
-
-    async main_VerPuntuacion(codigo){
-        var res= await this.verPuntuacion(codigo)
-        return res
-    }
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
     //modificar la de una palabra
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
-    /*modificarPuntuacion(palabra){
-
-        //Busco el codigo de la palabra
-        var cod_Palabra=this.buscarCodigoConPalabra(palabra)
-        console.log(cod_Palabra+"<--- soy cod_Palabra")
-
-        //Con el codigo de la palabra veo el codigo del usuario
-
-        var cod_User=this.relacionarCodigoPalabra_User(cod_Palabra)
-
-        //con el codigo del usuario veo su puntuación
-
-        this.verPuntuacion(cod_User)
-            .then((resultado) => {
-                var resultadoPuntuacion = resultado;
-                console.log(resultadoPuntuacion+"<-- soy resultadoPuntuación");
-                
-                //cojo la puntuación y le sumo 1
-                var newPuntuacion = parseInt(resultadoPuntuacion[0].puntuacion) + parseInt(1)
-                var valoresParaSQL = {$newPuntuacion: newPuntuacion, $codigo: codigo};
-
-                //Meto la nueva puntuación en la tabla
-                var textoSQL = "UPDATE Usuario SET puntuacion = $newPuntuacion WHERE Usuario.codigo = $codigo;";
-                
-                return new Promise((resolver, rechazar) => {
-                    this.laConexion.all(textoSQL, valoresParaSQL, (err, res) => {
-                        (err ? rechazar(err) : resolver(res));
-                    });
-                });
-            })
-            .catch(err => {
-                console.error(err);
-            });
-    }//.*/
+    
     async modificarPuntuacion(palabra){
         try {
             //Busco el codigo de la palabra
@@ -238,7 +190,7 @@ module.exports =class Logica {
             //cojo la puntuación y le sumo 1
             var newPuntuacion = parseInt(resultadoPuntuacion) + 1;
             //console.log(newPuntuacion+"<-- soy new puntuación")
-            
+
             var valoresParaSQL = {$newPuntuacion: newPuntuacion, $codigo: cod_User};
     
             //Meto la nueva puntuación en la tabla
@@ -319,6 +271,8 @@ module.exports =class Logica {
             })
         })
     }
+
+    //Me pasa solo un numero, me devuelve otro
     relacionarCodigoPalabra_User(datos){
         var textoSQL= "select codigo1 from Codigo where codigo2=$codigo;"
         var valoresParaSQL={$codigo:datos}

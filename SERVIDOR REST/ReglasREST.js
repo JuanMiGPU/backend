@@ -128,7 +128,8 @@ module.exports.cargar = function(servidorExpress, laLogica){
             var cod2= await laLogica.buscarCodigoConPalabra(pal)
             //FUNCIONES
             var codigoUs=cod1[0].codigo;
-            var codigoPal=cod2[0].codigo;
+            var codigoPal=cod2;
+            
             //console.log(codigoUs)
             //console.log(cod1+ "<--- sin stringify")
             //FUNCIONES
@@ -164,6 +165,16 @@ module.exports.cargar = function(servidorExpress, laLogica){
             var resultado = await laLogica.buscarPersonaConCodigo(codigo);
             respuesta.json(resultado);
         });
+
+    servidorExpress.get(
+        "/UsuarioconCodPalabra",
+        async function(peticion,respuesta){
+            console.log("* get UsuarioconCodPalabra");
+            var cod=peticion.body
+            var resultado= await laLogica.cogerUsuarioconCod_Palabra(cod)
+            respuesta.json(resultado)
+        }
+    )
 //NO HACE FALTA QUE ME ENVIES NADA.
     servidorExpress.get(
         "/palabras",

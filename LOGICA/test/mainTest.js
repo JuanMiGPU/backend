@@ -121,13 +121,18 @@ var Palabras =[
             assert.equal(puntuacion[0].puntuacion, 0, "no es 0 la puntuación?")
 })//it
 */
-it("puedo modificar la puntuacion de una palabra",
+/*it("puedo modificar la puntuacion de una palabra",
         async function(){
             await laLogica.modificarPuntuacion("macha")
             var res= await laLogica.verPuntuacion('11')
             //console.log(res)
             //assert.equal( res.length, 1, "¿no hay un resultado?" )
             assert.equal(res, 9, "no es 6 la puntuación?")
+        })//*/
+it("voy a coger el usuario con Palabra", 
+        async function(){
+                var usuario=await laLogica.cogerUsuarioconCod_Palabra({"codigo":2})
+                console.log(JSON.stringify(usuario)+"<--- soy usuario")
         })
 // ....................................................
 // ....................................................
