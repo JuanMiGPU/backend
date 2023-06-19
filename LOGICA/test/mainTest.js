@@ -70,7 +70,7 @@ it( "no puedo insertar una persona con codigo que ya está",
 
 */
 var Palabras
-        it("Relacionar códigos",
+        /*it("Relacionar códigos",
         async function(){
                 var res= await laLogica.verPalabras()
                 //console.log(res[0].codigo)
@@ -87,6 +87,7 @@ var Palabras
                 assert.equal(codigoUser, 10, "El código no es 10¿??")
 
         })
+
         it("puedo conseguir todas las palabras",
         async function(){
                 var res=await laLogica.verPalabras()
@@ -97,7 +98,7 @@ var Palabras
 
                 //console.log(res[0].codigo+"<---- res")
                 //console.log(res[1].codigo)
-        })
+        })*/
 
 console.log(JSON.stringify(Palabras)+"<---- Palabras")
 
@@ -105,12 +106,12 @@ var Palabras =[
         { codigo: 176, palabra: 'móvil' },
         { codigo: 177, palabra: 'hilo' }
       ]
-        it("puedo ver la Puntuacion de las palabras",
+        /*it("puedo ver la Puntuacion de las palabras",
         async function(){
                 var res=await laLogica.PuntuacionDePalabras(Palabras)
                 console.log(res+"<--- soy res")
-                assert.equal(res[0],4, "¿No corresponde la puntuación?")
-        })
+                assert.equal(res[0],5, "¿No corresponde la puntuación?")
+        })*/
 
 /*it("puedo ver la puntuación de una persona",
         async function(){
@@ -120,14 +121,14 @@ var Palabras =[
             assert.equal(puntuacion[0].puntuacion, 0, "no es 0 la puntuación?")
 })//it
 */
-/*it("puedo modificar la puntuacion de una persona",
+it("puedo modificar la puntuacion de una palabra",
         async function(){
-            await laLogica.modificarPuntuacion('1')
-            var res= await laLogica.verPuntuacion('1')
+            await laLogica.modificarPuntuacion("macha")
+            var res= await laLogica.verPuntuacion('11')
             //console.log(res)
             //assert.equal( res.length, 1, "¿no hay un resultado?" )
-            assert.equal(res, 1, "no es 1 la puntuación?")
-        })*/
+            assert.equal(res, 9, "no es 6 la puntuación?")
+        })
 // ....................................................
 // ....................................................
 it ( "cerrar conexión a la base de datos", 

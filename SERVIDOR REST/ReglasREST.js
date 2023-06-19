@@ -17,8 +17,19 @@ module.exports.cargar = function(servidorExpress, laLogica){
     }) // get /prueba
 
     servidorExpress.get("/borrar",async function( peticion, respuesta ){
+        console.log("MENCIA VOY A BORRAR")
         await laLogica.borrarTodo()
         respuesta.send("OK" )
+    })
+
+    servidorExpress.post("/modificarPuntuacion", 
+        async function(peticion, respuesta){
+            console.log("* POST/modificarPuntuacion")
+            var datos=JSON.parse(peticion.body)
+            console.log(peticion.body+"<-- soy petición.body   (Modificar puntuacion)")
+            await laLogica.modificarPuntuacion(datos.palabra)
+            respuesta.send("OK")
+
     })
 
     // .......................................................
@@ -27,7 +38,7 @@ module.exports.cargar = function(servidorExpress, laLogica){
     // .......................................................
     // POST /alta   
     // .......................................................
-    servidorExpress.post("/borrarFilasde", async function (peticion, respuesta) {
+    /*servidorExpress.post("/borrarFilasde", async function (peticion, respuesta) {
         console.log(" * POST /borrarFilasde ");
         // averiguo la tabla
         console.log(peticion.body+"<--- soy peticion.body")
@@ -38,7 +49,7 @@ module.exports.cargar = function(servidorExpress, laLogica){
         console.log(entrada+"<--- soy entrada")
         await laLogica.borrarFilasDe(entrada);
         respuesta.send("OK");
-      });
+      });*/
 
     // .......................................................
     // POST /alta   
