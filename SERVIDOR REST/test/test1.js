@@ -32,7 +32,7 @@ describe( "Test 1 : Recuerda arrancar el servidor", function() {
         } // callback()
         )//.get
         })//it*/
-    /*var Palabra={nombre:"Palabra"}
+    var Palabra={nombre:"Palabra"}
     
     it( "probar DELETE /palabra", function( hecho ) {
         request.post(
@@ -124,7 +124,7 @@ describe( "Test 1 : Recuerda arrancar el servidor", function() {
 
         )//.get
         })//it
-    */
+    
     // ....................................................
     // ....................................................
    /*it ("probar GET/palabras", function(done){
@@ -146,13 +146,9 @@ describe( "Test 1 : Recuerda arrancar el servidor", function() {
         { codigo: 176, palabra: 'móvil' },
         { codigo: 177, palabra: 'hilo' }
       ]
-    //MENCIAAAAAA
-
-    //CUIDADO: ns por qué pollas no me deja meter directo el JSON a la entrada,
-    //Lo he convertido a texto asiq tu tb tienes que meter texto en este método
-
-    //Sería ver el resultado de verPalabras y stringificarlo 
-    var entrada=JSON.stringify(Palabras)
+it("probar borrar", function(done){
+    request
+})
 
 it("probar post/puntuacionPalabras", function(done){
     request.post(

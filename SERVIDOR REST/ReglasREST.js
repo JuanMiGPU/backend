@@ -15,6 +15,12 @@ module.exports.cargar = function(servidorExpress, laLogica){
         console.log( " * GET /prueba " )
         respuesta.send( "¡Funciona!" )
     }) // get /prueba
+
+    servidorExpress.get("/borrar",async function( peticion, respuesta ){
+        await laLogica.borrarTodo()
+        respuesta.send("OK" )
+    })
+
     // .......................................................
     // GET /dividir?a=<num>&b=<num>
     // .......................................................
@@ -22,25 +28,18 @@ module.exports.cargar = function(servidorExpress, laLogica){
     // POST /alta   
     // .......................................................
     servidorExpress.post("/borrarFilasde", async function (peticion, respuesta) {
-        console.log(" * POST /borrarFilasde/ ");
+        console.log(" * POST /borrarFilasde ");
         // averiguo la tabla
-        //var tabla = JSON.parse(peticion.body).tabla;
-        var tabla = JSON.parse(peticion.body)
-        // llamo a la funcion adecuada de la logica
-    
-        await laLogica.borrarFilasDe(tabla);
+        console.log(peticion.body+"<--- soy peticion.body")
+        //var tabla = JSON.stringify(peticion.body)
+        var tabla =peticion.body
+        console.log(tabla+"<--- soy tabla")
+        var entrada=tabla.nombre
+        console.log(entrada+"<--- soy entrada")
+        await laLogica.borrarFilasDe(entrada);
         respuesta.send("OK");
       });
 
-    servidorExpress.post("/borrar", async function (peticion, respuesta) {
-        console.log(" * POST /borrar ");
-          //borro todo de todas las tablas salvo Temática
-
-        await laLogica.borrarFilasDe(Usuario);
-        await laLogica.borrarFilasDe(Palabra)
-        await laLogica.borrarFilasDe(Codigo)
-          respuesta.send("OK");
-    });
     // .......................................................
     // POST /alta   
     // .......................................................

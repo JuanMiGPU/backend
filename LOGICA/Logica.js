@@ -26,6 +26,11 @@ module.exports =class Logica {
     // nombreTabla=Texto -->
     //                      borrarFilasDe()-->
     //----------------------------------------------
+    async borrarTodo(){
+        await this.borrarFilasDe("Usuario")
+        await this.borrarFilasDe("Palabra")
+        await this.borrarFilasDe("Codigo")
+    }
     borrarFilasDe( tabla ){
         return new Promise ((resolver, rechazar) => {
             this.laConexion.run(
