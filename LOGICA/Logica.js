@@ -3,9 +3,13 @@
 //----------------------------------------------
 const sqlite3 = require ("sqlite3")
 const { resourceLimits } = require("worker_threads")
+var temasAsignados = [];
 
 
 module.exports =class Logica {
+
+
+
 
     //----------------------------------------------
     // nombreBD: texto -->
@@ -23,8 +27,7 @@ module.exports =class Logica {
     }
 
     //----------------------------------------------
-    // nombreTabla=Texto -->
-    //                      borrarFilasDe()-->
+    // BORRAR
     //----------------------------------------------
     async borrarTodo(){
         await this.borrarFilasDe("Usuario")
@@ -39,6 +42,79 @@ module.exports =class Logica {
             )
         })
     }
+    //---------------------------------------------------------------------
+    //     CONTADOR
+    //---------------------------------------------------------------------
+    verContador(){
+        var textoSQL = "select * from contadorUsuarios;";
+        return new Promise ((resolver, rechazar)=>{
+            this.laConexion.all(textoSQL,(err,res)=>{
+                (err ? rechazar(err): resolver(res[0].contador))
+            })
+        })
+    }
+    modificarContador(){
+        try {
+    
+            //Meto la nueva puntuación en la tabla
+            var textoSQL = "UPDATE contadorUsuarios SET contador = contador + 1;";
+            
+            new Promise((resolver, rechazar) => {
+                this.laConexion.all(textoSQL, (err, res) => {
+                    (err ? rechazar(err) : resolver(res));
+                });
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+    
+    //---------------------------------------------------------------------
+    //     TEMATICAS
+    //---------------------------------------------------------------------
+    verTematicas(){
+        var textoSQL = "select * from Tematica;";
+        return new Promise ((resolver, rechazar)=>{
+            this.laConexion.all(textoSQL,(err,res)=>{
+                (err ? rechazar(err): resolver(res))
+            })
+        })
+    }
+
+
+    async asignarTemaAUsuario() {
+      // Cargar todas las temáticas de la BD solo si no se han cargado ya
+        temasAsignados = await this.verTematicas(); 
+        // Incrementamos el contador de usuarios
+
+        var resultado= await this.temasPara5()
+        return resultado
+    }
+    async temasPara5(){
+        // Seleccionar dos temas diferentes aleatoriamente
+        //tengo dos codigos distintos de todo el array de ver temáticas
+        const codigosTemas = [];
+        while (codigosTemas.length < 2) {
+          const indiceAleatorio = Math.floor(Math.random() * temasAsignados.length);
+          if (!codigosTemas.includes(indiceAleatorio)) {
+            codigosTemas.push(indiceAleatorio);
+          }
+        }
+        var contadorUsuarios=await this.verContador()
+        // Asignamos el tema común a los primeros 4 usuarios y el tema especial al quinto
+        let temaAsignado = contadorUsuarios % 5 === 4 ? temasAsignados[codigosTemas[0]] : temasAsignados[codigosTemas[1]];
+        
+        await this.modificarContador()
+
+        console.log(contadorUsuarios+"<--- soy contador usuarios")
+        return temaAsignado
+    }
+
+
+
+
+
+
     //----------------------------------------------
     // inserta una palabra dado SOLO la palabra
     //----------------------------------------------
@@ -116,10 +192,13 @@ module.exports =class Logica {
     async PuntuacionDePalabras(palabras) {//CHATGPT
         //try {
             //console.log(palabras)
+            console.log(palabras[0].codigo+" <--- soy palabras[0].codigo")
             let codigosUsuarios = [];
             for (let i = 0; i < palabras.length; i++) {
                 //console.log(palabras[i].codigo+"<--- soy el codigo de palabra i")
-                let codigoUsuario = await this.relacionarCodigoUserConPalabra(palabras[i].codigo);
+                //console.log(palabras[i].codigo)
+                
+                let codigoUsuario = await this.relacionarCodigoPalabra_User(palabras[i].codigo);
                 codigosUsuarios.push(codigoUsuario);
                 //console.log(codigoUsuario+"<--- soy codigo usuario")
             }

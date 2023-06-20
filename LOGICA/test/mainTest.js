@@ -1,6 +1,7 @@
 // ........................................................
 // mainTest1.js
 // ........................................................
+const { parse } = require("path")
 const Logica = require( "../Logica.js" )
 var assert = require ('assert')
 
@@ -129,11 +130,28 @@ var Palabras =[
             //assert.equal( res.length, 1, "¿no hay un resultado?" )
             assert.equal(res, 9, "no es 6 la puntuación?")
         })//*/
-it("voy a coger el usuario con Palabra", 
+/*it("modificar contador", async function(){
+        await laLogica.modificarContador()
+        var res=await laLogica.verContador()
+        //console.log(cont+"<-- soy cont")
+        //console.log(res+"<--- soy res")
+
+})//*/
+it("ver temáticas",
+        async function(){
+                var tematicas=await laLogica.verTematicas()
+                console.log(JSON.stringify(tematicas))
+        })//
+
+it ("asignar temática a usuario", async function(){
+        var tema= await laLogica.asignarTemaAUsuario()
+        console.log(tema)
+})//*/
+/*it("voy a coger el usuario con Palabra", 
         async function(){
                 var usuario=await laLogica.cogerUsuarioconCod_Palabra({"codigo":2})
                 console.log(JSON.stringify(usuario)+"<--- soy usuario")
-        })
+        })*/
 // ....................................................
 // ....................................................
 it ( "cerrar conexión a la base de datos", 

@@ -5,6 +5,8 @@ module.exports.cargar = function(servidorExpress, laLogica){
     var express = require('express')
     var app = express()
     var bodyParser = require('body-parser');
+    //let contadorUsuarios = 0;
+    //let temasAsignados = ['temaComun', 'temaEspecial'];
 
     app.use(express.json())
     app.use(bodyParser.json());
@@ -33,8 +35,20 @@ module.exports.cargar = function(servidorExpress, laLogica){
     })
 
     // .......................................................
-    // GET /dividir?a=<num>&b=<num>
+    // GET /tematica
     // .......................................................
+
+    let contadorUsuarios = 0;
+    let temasAsignados = ['temaComun', 'temaEspecial'];
+    function asignarTema() {
+        // Asignamos el tema común a los primeros 4 usuarios y el tema especial al quinto
+        let temaAsignado = contadorUsuarios % 5 === 4 ? temasAsignados[1] : temasAsignados[0];
+        
+        // Incrementamos el contador de usuarios
+        contadorUsuarios++;
+        
+        return temaAsignado;
+    }
     // .......................................................
     // POST /alta   
     // .......................................................
@@ -191,12 +205,14 @@ module.exports.cargar = function(servidorExpress, laLogica){
             console.log(" * POST Puntuación Palabras")
             //entrada=JSON.parse(peticion.body)
             console.log(JSON.stringify(peticion.body)+"<--- soy peticion.body en Reglas")
+            console.log(peticion.body+" <-- sin stringificar")
             //console.log(JSON.parse(peticion.body))
             var datos=JSON.parse(peticion.body)
-            //console.log(datos+"<--- soy datos")
-
+            //console.log(JSON.stringify(datos.codigo)+"<--- soy datos.codigo")
+            console.log(Array.isArray(datos))
+            console.log(typeof datos+"<-- type of petición.body")
             var resultado =await laLogica.PuntuacionDePalabras(datos)
-            //console.log(resultado+"<-----de puntuacionPalabras")
+            console.log(resultado+"<-----de puntuacionPalabras")
             respuesta.json(resultado)
         }
     )
