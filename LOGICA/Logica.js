@@ -3,8 +3,6 @@
 //----------------------------------------------
 const sqlite3 = require ("sqlite3")
 const { resourceLimits } = require("worker_threads")
-var temasAsignados = null;
-var temasSeleccionados= null;
 
 
 module.exports =class Logica {
@@ -44,6 +42,47 @@ module.exports =class Logica {
         })
     }
     //---------------------------------------------------------------------
+    //     TEMAS SELECCIONADOS
+    //---------------------------------------------------------------------
+    //devuelve un array de dos números con los índices de las temáticas
+    vacio(){
+
+    }
+    verTemasSeleccionados(){
+        var textoSQL = "select * from temasSeleccionados;";
+        return new Promise ((resolver, rechazar)=>{
+            this.laConexion.all(textoSQL,(err,res)=>{
+                if (err) {
+                    rechazar(err);
+                } else {
+                    /*resolver(resultado);
+                    }//else*/
+                    //console.log(res+"<-- soy res")
+                    resolver(res)
+                }//else
+            })
+        })
+    }
+    //añade al indice el índice que queramos, se le da un número
+    añadirTemaSeleccionado(indice){
+        var textoSQL="insert into temasSeleccionados (indice) values ($indice);"
+        var valoresParaSQL = { $indice: indice };
+        return new Promise ((resolver, rechazar)=>{
+            this.laConexion.all(textoSQL,valoresParaSQL, (err,res)=>{
+                (err ? rechazar(err): resolver(res))
+            })
+        })
+    }
+    borrarTemasSeleccionados(){
+        var textoSQL=" delete from temasSeleccionados;"
+        return new Promise ((resolver, rechazar)=>{
+            this.laConexion.all(textoSQL, (err,res)=>{
+                (err ? rechazar(err): resolver(res))
+            })
+        })
+
+    }
+    //---------------------------------------------------------------------
     //     CONTADOR
     //---------------------------------------------------------------------
     verContador(){
@@ -54,6 +93,7 @@ module.exports =class Logica {
             })
         })
     }
+
     /*modificarContador(){
         try {
     
@@ -90,9 +130,10 @@ module.exports =class Logica {
         });
         
     }//*/
+    
     incrementarYObtenerContador() {
         return new Promise((resolver, rechazar) => {
-            const textoSQL = "UPDATE contadorUsuarios SET contador = (contador % 5) + 1;";
+            const textoSQL = "UPDATE contadorUsuarios SET contador = (contador % 5)+1;";
             this.laConexion.run(textoSQL, function(err) {
                 if (err) {
                     rechazar(err);
@@ -122,13 +163,112 @@ module.exports =class Logica {
 
     async asignarTemaAUsuario() {
       // Cargar todas las temáticas de la BD solo si no se han cargado ya
-        temasAsignados = await this.verTematicas(); 
+        
         // Incrementamos el contador de usuarios
+        var tematica= await this.verTematicas()
+        //console.log(res)
 
         var resultado= await this.temasPara5()
-        return resultado
+        //console.log(tematica[4]+"<--- soy temática[4]")
+        return tematica[resultado-1]
     }
-    /*async temasPara5(){
+   
+    async temasPara5() {
+
+        //TODAS LAS TEMÁTICAS
+        var tematicas = await this.verTematicas();
+        var cont=await this.verContador()
+        console.log(cont+"<-- soy cont")
+
+        // Si el contadorUsuarios es un múltiplo de 5, o si los temas no se han seleccionado todavía,
+        // seleccionamos dos temas aleatorios
+        var temas=await this.verTemasSeleccionados()
+
+        //console.log(temas+"<-- sin stringificar")
+        //console.log(JSON.stringify(temas)+"<-- soy temas stringificado")
+
+        if (temas.length < 2 || cont % 5 === 0){
+        //if (/*JSON.stringify(temas) == [ ] ||*/ cont1 % 5 === 0){
+            console.log("estoy en el if")
+
+            //si el contador es 5, se limpia todo
+            if (cont === 5) {
+                await this.borrarTemasSeleccionados()
+                temas = [] // También limpia el array temas en la memoria.
+            }
+
+            //creo un array con códigos para las temáticas
+                //var codigosTemas = [];
+
+            //mientras que ese array tenga menos de dos casillas, necesito que añada índices
+            //dos casillas porque cada 5 rondas necesito dos temáticas distintas.
+
+          /*while (temas.length < 2) {
+                //índice aleatorio redondeando hacia abajo, (de 0 a 4)
+            const indiceAleatorio = Math.floor(Math.random() * 3)+1;
+
+                //si el array con los códigos de las temáticas no tiene este código, lo añade
+            if (!temas.includes(indiceAleatorio)) {
+                //codigosTemas.push(indiceAleatorio);
+                console.log(indiceAleatorio+"<--- soy indiceAleatorio")
+                // Guardamos los temas seleccionados
+                 await this.añadirTemaSeleccionado(indiceAleatorio)
+                 temas=await this.verTemasSeleccionados()
+                 console.log(JSON.stringify(temas)+ "<--soy temas en el if de temas para 5" )
+                 
+            }//*/
+            
+            while (temas.length < 2) {
+
+                //GENERA NÚMEROS ALEATORIOS DE 0 A 4, PERO REDONDEA HACIA ABAJO SIEMPRE ENTONCES ES
+                // DE 0 A 3,Y SE LE SUMA 1 PARA OBTENER VALORES DE 1 A 4 
+                //QUE ES COMO ESTÁN INDEXADAS LAS TEMÁTICAS EN LA BASE DE DATOS
+
+
+                const indiceAleatorio = Math.floor(Math.random() * 4) + 1;//SE HA CAMBIADO
+
+                if (!temas.includes(indiceAleatorio)) {
+                    await this.añadirTemaSeleccionado(indiceAleatorio)
+                    temas = await this.verTemasSeleccionados()
+                    //console.log(JSON.stringify(temas)+ "<--soy temas en el if de temas para 5" )
+                }
+            }
+        }
+         // si la longitud es >2, va a ir mal
+        //console.log(temas.length+"<-- soy .length")
+    
+        //me guardo todos los temas en un array
+        var tem= await this.verTemasSeleccionados()
+
+        console.log(JSON.stringify(tem[0])+" soy tem[0] "+ JSON.stringify(tem[1])+ " soy tem[1]")
+
+        //EN TEM[0] Y TEM[1] SON JSON, HAY QUE ACCEDER A SU CAMPO
+
+        //CONTADOR INCREMENTADO
+        var cont1=await this.incrementarYObtenerContador()
+        console.log(cont1+"<-- soy cont1")
+
+        // Asignamos el tema común a los primeros 4 usuarios y el tema especial al quinto
+        /*let temaAsignado = cont % 5 == 4 ? temasSeleccionados[0] : temasSeleccionados[1];
+                */
+        // Se incrementa el contador 
+        
+        //cuando el contador es == 5, se devuelve un tema
+        if(cont==5){
+            //cuando es 5 me devuelve la temática con el indice 0
+            // VOY A MANDAR UN ÍNDICE, EN LA FUNCION PRINCIPAL ASIGNO LA VARIABLE QUE QUIERA
+            var resultado=tem[0].indice
+            //console.log(resultado+"<--- soy resultado del if")
+            return resultado
+        }else{//si no, se devuelve otro
+            //console.log(tem[1].indice+"<--- soy resultado del else")
+            return tem[1].indice
+        }
+    }//función
+    
+
+
+ /*async temasPara5(){
 
         // Seleccionar dos temas diferentes aleatoriamente
         const codigosTemas = [];
@@ -146,41 +286,8 @@ module.exports =class Logica {
         return temaAsignado
     }//*/
 
-    async temasPara5() {
-        // Si el contadorUsuarios es un múltiplo de 5, o si los temas no se han seleccionado todavía,
-        // seleccionamos dos temas aleatorios
-        var cont=await this.verContador()
 
-        if (temasSeleccionados === null || cont % 5 === 0) {
-                var codigosTemas = [];
-          while (codigosTemas.length < 2) {
-            const indiceAleatorio = Math.floor(Math.random() * 4) + 1;
-            if (!codigosTemas.includes(indiceAleatorio)) {
-              codigosTemas.push(indiceAleatorio);
-            }
-          }
-          // Guardamos los temas seleccionados
-          temasSeleccionados = [temasAsignados[codigosTemas[0]], temasAsignados[codigosTemas[1]]];
-        }
-      
-        // Asignamos el tema común a los primeros 4 usuarios y el tema especial al quinto
-        /*let temaAsignado = cont % 5 == 4 ? temasSeleccionados[0] : temasSeleccionados[1];
-                */
-        
-        var cont1=await this.incrementarYObtenerContador()
-        //console.log(cont1+"<-- soy cont1 incrementado")
-        console.log(cont + "<--- soy contador usuarios")
-        if(cont==5){
-            return temasAsignados[codigosTemas[0]]
-        }
-        return temasAsignados[codigosTemas[1]]
-
-        
-      }
-
-
-
-
+    
     //----------------------------------------------
     // inserta una palabra dado SOLO la palabra
     //----------------------------------------------

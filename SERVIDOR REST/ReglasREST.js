@@ -11,7 +11,7 @@ module.exports.cargar = function(servidorExpress, laLogica){
     app.use(express.json())
     app.use(bodyParser.json());
     // .......................................................
-    // GET /prueba
+    // BORRAR
     // .......................................................
     servidorExpress.get("/prueba/", function( peticion, respuesta ){
         console.log( " * GET /prueba " )
@@ -22,6 +22,11 @@ module.exports.cargar = function(servidorExpress, laLogica){
         console.log("MENCIA VOY A BORRAR")
         await laLogica.borrarTodo()
         respuesta.send("OK" )
+    })
+    servidorExpress.get("/tematica", async function(peticion,respuesta){
+        console.log("GET/tematica")
+        var res=await laLogica.asignarTemaAUsuario()
+        respuesta.json(res)
     })
 
     servidorExpress.post("/modificarPuntuacion", 
@@ -180,7 +185,7 @@ module.exports.cargar = function(servidorExpress, laLogica){
             respuesta.json(resultado);
         });
 
-    servidorExpress.get(
+    servidorExpress.post(
         "/UsuarioconCodPalabra",
         async function(peticion,respuesta){
             console.log("* get UsuarioconCodPalabra");
